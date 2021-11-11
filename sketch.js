@@ -1,19 +1,21 @@
 let links = []
 let apple
 let score
+let keys = []
 
 function setup() {
   c1 = '#A2D149'
   c2 = '#AAD751'
-  x = 600
-  y = 600
+  keys = []
+  x = 400
+  y = 400
   length = 6
   n = 17
   d_x = 0
   d_y = 0
   createCanvas(x, y)
   background(220)
-  frameRate(10)
+  frameRate(12)
   game_state = 0
   restart()
   //  print(links.length)
@@ -40,48 +42,102 @@ function restart() {
 
 
 function keyPressed() {
-  game_state = 1
+  if (keys.length == 2) {
+    return
+  } else if (keys.length == 1) {
+    if (keyCode === LEFT_ARROW || keyCode === 65) {
+      if (keys[0] != "RIGHT") {
+        keys.push("LEFT")
+      }
 
-  if (keyCode === LEFT_ARROW || keyCode === 65) {
-    if (d_x != 1) {
-      d_x = -1
-      d_y = 0
+    } else if (keyCode === RIGHT_ARROW || keyCode === 68) {
+      game_state = 1
+      if (keys[0] != "LEFT") {
+        keys.push("RIGHT")
+      }
+
+    } else if (keyCode === UP_ARROW || keyCode === 87) {
+      game_state = 1
+      if (keys[0] != "DOWN") {
+        keys.push("UP")
+      }
+
+    } else if (keyCode === DOWN_ARROW || keyCode === 83) {
+      game_state = 1
+      if (keys[0] != "UP") {
+        keys.push("DOWN")
+      }
     }
-  } else if (keyCode === RIGHT_ARROW || keyCode === 68) {
-    if (d_x != -1) {
-      d_x = 1
-      d_y = 0
-    }
-  } else if (keyCode === UP_ARROW || keyCode === 87) {
-    if (d_y != 1) {
-      d_y = -1
-      d_x = 0
-    }
-  } else if (keyCode === DOWN_ARROW || keyCode === 83) {
-    if (d_y != -1) {
-      d_y = 1
-      d_x = 0
+  } else {
+    if (keyCode === LEFT_ARROW || keyCode === 65) {
+      if (d_x != 1) {
+        keys.push("LEFT")
+      }
+
+    } else if (keyCode === RIGHT_ARROW || keyCode === 68) {
+      if (d_x != -1) {
+        keys.push("RIGHT")
+      }
+
+    } else if (keyCode === UP_ARROW || keyCode === 87) {
+      if (d_y != 1) {
+        keys.push("UP")
+      }
+
+    } else if (keyCode === DOWN_ARROW || keyCode === 83) {
+      if (d_y != -1) {
+        keys.push("DOWN")
+      }
     }
   }
+
+  
 }
+
 
 function draw() {
   if (game_state == 1) {
     drawGrid()
+    direction()
     snakeMove()
     wallCollide()
     snakeCollide()
     appleCollide()
     apple.show()
   } else {
-    textSize(40)
+    textSize(x/15)
     fill(0)
     strokeWeight(0)
-    text('your score was:' + score, 220, 380)
-    textSize(20)
-    text('press arrow keys/WASD to start', 220, 400)
+    text('your score was:' + score, x/2.5, y/1.5)
+    textSize(x/30)
+    text('press arrow keys/WASD to start', x/2.5, y/1.5+y/30)
     strokeWeight(1)
   }
+}
+
+function direction() {
+  
+  if (keys[0] == "LEFT") {
+    d_x = -1
+    d_y = 0
+  }
+  
+  if (keys[0] == "RIGHT") {
+    d_x = 1
+    d_y = 0
+  }
+  
+  if (keys[0] == "UP") {
+    d_x = 0
+    d_y = -1
+  }
+  
+  if (keys[0] == "DOWN") {
+    d_x = 0
+    d_y = 1
+  }
+  keys.shift()
+
 }
 
 function snakeMove() {
